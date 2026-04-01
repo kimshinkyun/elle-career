@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>당신의 커리어를 다시 시작하세요 | 보험 전문가 리크루팅</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C9A96E;
+      --gold-light: #E8D5B0;
+      --dark: #1A1A2E;
+      --darker: #0F0F1A;
+      --white: #FFFFFF;
+      --gray: #F8F6F2;
+      --text-dark: #2C2C3E;
+      --text-mid: #6B6B7B;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--white);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 20px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(15,15,26,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,169,110,0.2);
+    }
+    .nav-logo {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--gold); letter-spacing: 0.05em;
+    }
+    .nav-cta {
+      background: var(--gold); color: var(--darker);
+      padding: 10px 24px; border-radius: 30px;
+      font-size: 0.82rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.05em;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--darker) 0%, #16213E 50%, #1A1A2E 100%);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,169,110,0.12) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-block;
+      border: 1px solid var(--gold); color: var(--gold);
+      padding: 6px 20px; border-radius: 30px;
+      font-size: 0.75rem; letter-spacing: 0.15em; font-weight: 500;
+      margin-bottom: 32px;
+    }
+    .hero h1 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(2rem, 6vw, 3.8rem);
+      font-weight: 700; color: var(--white);
+      line-height: 1.3; margin-bottom: 24px;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero p {
+      font-size: clamp(0.95rem, 2vw, 1.15rem);
+      color: rgba(255,255,255,0.65);
+      line-height: 1.9; max-width: 560px; margin: 0 auto 48px;
+    }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--gold); color: var(--darker);
+      padding: 16px 40px; border-radius: 50px;
+      font-size: 0.95rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.05em;
+      transition: all 0.3s; box-shadow: 0 8px 30px rgba(201,169,110,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(201,169,110,0.45); }
+    .btn-outline {
+      border: 1px solid rgba(255,255,255,0.3); color: var(--white);
+      padding: 16px 40px; border-radius: 50px;
+      font-size: 0.95rem; font-weight: 500;
+      text-decoration: none; letter-spacing: 0.05em;
+      transition: all 0.3s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.35); font-size: 0.7rem; letter-spacing: 0.1em;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--gold));
+      animation: scrollDown 2s ease-in-out infinite;
+    }
+    @keyframes scrollDown {
+      0%,100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ── STATS ── */
+    .stats {
+      background: var(--gray);
+      padding: 60px 40px;
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+    }
+    .stat-item {
+      flex: 1; min-width: 160px; max-width: 240px;
+      text-align: center; padding: 20px 24px;
+      border-right: 1px solid rgba(201,169,110,0.25);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 2.4rem; font-weight: 700;
+      color: var(--dark); letter-spacing: -0.02em;
+    }
+    .stat-num span { color: var(--gold); }
+    .stat-label { font-size: 0.8rem; color: var(--text-mid); margin-top: 6px; letter-spacing: 0.05em; }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 100px 24px; }
+    .section-label {
+      text-align: center; color: var(--gold);
+      font-size: 0.75rem; letter-spacing: 0.2em; font-weight: 600;
+      text-transform: uppercase; margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700; text-align: center;
+      line-height: 1.4; margin-bottom: 16px;
+    }
+    .section-sub {
+      text-align: center; color: var(--text-mid);
+      font-size: 1rem; line-height: 1.8;
+      max-width: 540px; margin: 0 auto 60px;
+    }
+
+    /* ── WHY ── */
+    .why { background: var(--white); }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px; max-width: 1100px; margin: 0 auto;
+    }
+    .why-card {
+      background: var(--gray);
+      border-radius: 20px; padding: 40px 32px;
+      border: 1px solid transparent;
+      transition: all 0.4s;
+      position: relative; overflow: hidden;
+    }
+    .why-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .why-card:hover { border-color: var(--gold-light); transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
+    .why-card:hover::before { opacity: 1; }
+    .why-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 14px; margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+    .why-card h3 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.15rem; font-weight: 700;
+      margin-bottom: 12px; color: var(--dark);
+    }
+    .why-card p { font-size: 0.88rem; line-height: 1.8; color: var(--text-mid); }
+
+    /* ── JOURNEY ── */
+    .journey { background: var(--dark); }
+    .journey .section-title { color: var(--white); }
+    .journey .section-sub { color: rgba(255,255,255,0.5); }
+    .steps {
+      display: flex; flex-direction: column; gap: 0;
+      max-width: 700px; margin: 0 auto;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute; left: 28px; top: 28px; bottom: 28px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+    .step {
+      display: flex; gap: 28px; align-items: flex-start;
+      padding: 32px 0;
+    }
+    .step-num {
+      width: 56px; height: 56px; flex-shrink: 0;
+      border: 2px solid var(--gold); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.1rem; font-weight: 700; color: var(--gold);
+      background: var(--dark); position: relative; z-index: 1;
+    }
+    .step-content h3 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.1rem; color: var(--white);
+      font-weight: 600; margin-bottom: 8px;
+    }
+    .step-content p { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+    /* ── VOICE ── */
+    .voice { background: var(--gray); }
+    .voice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px; max-width: 1000px; margin: 0 auto;
+    }
+    .voice-card {
+      background: var(--white);
+      border-radius: 20px; padding: 36px 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+    .voice-card:hover { transform: translateY(-4px); }
+    .quote-mark {
+      font-family: Georgia, serif;
+      font-size: 3rem; color: var(--gold); line-height: 0.8;
+      margin-bottom: 16px;
+    }
+    .voice-text {
+      font-size: 0.92rem; line-height: 1.9;
+      color: var(--text-dark); margin-bottom: 24px;
+      font-style: italic;
+    }
+    .voice-person { display: flex; align-items: center; gap: 14px; }
+    .voice-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: var(--darker);
+      font-family: 'Noto Serif KR', serif;
+    }
+    .voice-info strong { font-size: 0.88rem; font-weight: 700; color: var(--dark); display: block; }
+    .voice-info span { font-size: 0.78rem; color: var(--text-mid); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--darker) 0%, #16213E 100%);
+      text-align: center; padding: 120px 24px;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(201,169,110,0.1) 0%, transparent 70%);
+    }
+    .cta-section .section-title { color: var(--white); position: relative; }
+    .cta-section .section-sub { color: rgba(255,255,255,0.55); position: relative; }
+    .cta-form {
+      display: flex; gap: 12px; justify-content: center;
+      flex-wrap: wrap; max-width: 480px; margin: 0 auto;
+      position: relative;
+    }
+    .cta-form input {
+      flex: 1; min-width: 200px;
+      padding: 16px 24px; border-radius: 50px;
+      border: 1px solid rgba(201,169,110,0.3);
+      background: rgba(255,255,255,0.07); color: var(--white);
+      font-size: 0.92rem; outline: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: border-color 0.3s;
+    }
+    .cta-form input::placeholder { color: rgba(255,255,255,0.35); }
+    .cta-form input:focus { border-color: var(--gold); }
+    .cta-form button {
+      background: var(--gold); color: var(--darker);
+      padding: 16px 32px; border-radius: 50px;
+      border: none; font-size: 0.92rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.04em;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.3s; white-space: nowrap;
+    }
+    .cta-form button:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .cta-note { font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 16px; position: relative; }
+    .kakao-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #FEE500; color: #3B1D1D;
+      padding: 18px 48px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.03em;
+      transition: all 0.3s;
+      box-shadow: 0 8px 30px rgba(254,229,0,0.35);
+      position: relative;
+    }
+    .kakao-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(254,229,0,0.5); background: #FFD600; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--darker);
+      padding: 40px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      border-top: 1px solid rgba(201,169,110,0.15);
+    }
+    .footer-logo {
+      font-family: 'Noto Serif KR', serif;
+      color: var(--gold); font-size: 1rem; font-weight: 700;
+    }
+    .footer-text { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+
+    /* ── FADE IN ── */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .stat-item { border-right: none; border-bottom: 1px solid rgba(201,169,110,0.2); }
+      .stat-item:last-child { border-bottom: none; }
+      .steps::before { display: none; }
+      footer { flex-direction: column; text-align: center; padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ELLE CAREER</div>
+  <a href="https://open.kakao.com/o/gprhIgoi" target="_blank" class="nav-cta">카카오 상담</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-badge">WOMEN'S CAREER PLATFORM</div>
+    <h1>
+      멈췄던 당신의 시간,<br/>
+      이제 <span>다시 빛날 차례</span>입니다
+    </h1>
+    <p>
+      육아와 가정으로 잠시 쉬었던 당신의 경험은<br/>
+      오히려 최고의 경쟁력이 됩니다.<br/>
+      보험 전문가로 새 출발, 지금 시작하세요.
+    </p>
+    <div class="hero-btns">
+      <a href="https://open.kakao.com/o/gprhIgoi" target="_blank" class="btn-primary">무료 상담 신청하기</a>
+      <a href="#why" class="btn-outline">자세히 알아보기</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item fade-up">
+    <div class="stat-num">93<span>%</span></div>
+    <div class="stat-label">경력단절 여성 재취업 성공률</div>
+  </div>
+  <div class="stat-item fade-up">
+    <div class="stat-num">6<span>개월</span></div>
+    <div class="stat-label">평균 자격증 취득 기간</div>
+  </div>
+  <div class="stat-item fade-up">
+    <div class="stat-num">500<span>+</span></div>
+    <div class="stat-label">함께하는 여성 파트너</div>
+  </div>
+  <div class="stat-item fade-up">
+    <div class="stat-num">자유<span></span></div>
+    <div class="stat-label">시간·장소 제약 없는 근무</div>
+  </div>
+</div>
+
+<!-- WHY -->
+<section class="why" id="why">
+  <div class="section-label">WHY ELLE CAREER</div>
+  <h2 class="section-title">왜 보험 전문가인가요?</h2>
+  <p class="section-sub">경력단절 여성에게 이보다 더 잘 맞는 직업은 없습니다</p>
+  <div class="why-grid">
+    <div class="why-card fade-up">
+      <div class="why-icon">🕐</div>
+      <h3>내 일정에 맞는 자유로운 시간</h3>
+      <p>아이 등하원, 가정 일정에 맞춰 내가 원하는 시간에 일할 수 있습니다. 출퇴근 시간도, 고정된 스케줄도 없습니다.</p>
+    </div>
+    <div class="why-card fade-up">
+      <div class="why-icon">💰</div>
+      <h3>노력한 만큼 돌아오는 수입</h3>
+      <p>월 200만원부터 1,000만원 이상까지, 내 노력과 성과에 따라 수입이 결정됩니다. 상한선이 없는 수입 구조.</p>
+    </div>
+    <div class="why-card fade-up">
+      <div class="why-icon">🎓</div>
+      <h3>체계적인 교육과 자격증 지원</h3>
+      <p>처음이라도 괜찮습니다. 자격증 취득부터 현장 실습까지 전문 멘토가 1:1로 함께합니다.</p>
+    </div>
+    <div class="why-card fade-up">
+      <div class="why-icon">👭</div>
+      <h3>같은 길을 걷는 여성 네트워크</h3>
+      <p>비슷한 환경의 선배 파트너들이 있습니다. 혼자가 아닌 함께 성장하는 커뮤니티를 경험하세요.</p>
+    </div>
+    <div class="why-card fade-up">
+      <div class="why-icon">🌱</div>
+      <h3>경력 공백이 오히려 강점</h3>
+      <p>육아와 가정 경험은 고객의 삶을 이해하는 최고의 공감 능력이 됩니다. 당신의 경험이 경쟁력입니다.</p>
+    </div>
+    <div class="why-card fade-up">
+      <div class="why-icon">🏆</div>
+      <h3>전문직으로서의 사회적 인정</h3>
+      <p>국가공인 보험 자격증 보유 전문가로서 사회에 당당히 서는 커리어를 만들어 드립니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section class="journey" id="journey">
+  <div class="section-label" style="color: var(--gold);">YOUR JOURNEY</div>
+  <h2 class="section-title">시작은 이렇게 합니다</h2>
+  <p class="section-sub">4단계로 새로운 커리어가 시작됩니다</p>
+  <div class="steps">
+    <div class="step fade-up">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>무료 커리어 상담</h3>
+        <p>현재 상황과 목표를 나눠봐요. 부담 없이 커피 한 잔 하듯 이야기 나눕니다. 온라인 상담도 가능합니다.</p>
+      </div>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>자격증 취득 (평균 3~6개월)</h3>
+        <p>생명보험·손해보험 자격증을 체계적인 커리큘럼으로 취득합니다. 합격률 95% 이상의 검증된 교육 시스템.</p>
+      </div>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>1:1 멘토링 & 현장 실습</h3>
+        <p>선배 파트너와 함께 실전 감각을 키웁니다. 고객 상담 방법, 계약 과정 등을 직접 경험하며 배웁니다.</p>
+      </div>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>독립 활동 & 지속 성장</h3>
+        <p>나만의 고객 포트폴리오를 구축하며 안정적인 수입 구조를 만들어 갑니다. 팀 리더로 성장하는 길도 열려있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VOICE -->
+<section class="voice">
+  <div class="section-label">REAL STORIES</div>
+  <h2 class="section-title">먼저 시작한 분들의 이야기</h2>
+  <p class="section-sub">망설였던 그분들도, 지금은 당당한 전문가입니다</p>
+  <div class="voice-grid">
+    <div class="voice-card fade-up">
+      <div class="quote-mark">"</div>
+      <p class="voice-text">8년의 경력 공백이 너무 두려웠어요. 근데 오히려 아이를 키우며 쌓은 경험이 고객 공감에 정말 큰 도움이 됐어요. 지금은 월 400만원 이상 꾸준히 버고 있습니다.</p>
+      <div class="voice-person">
+        <div class="voice-avatar">김</div>
+        <div class="voice-info">
+          <strong>김○○님</strong>
+          <span>전업주부 8년 → 보험 전문가 3년차</span>
+        </div>
+      </div>
+    </div>
+    <div class="voice-card fade-up">
+      <div class="quote-mark">"</div>
+      <p class="voice-text">아이 어린이집 보내고 오전에만 일해도 충분한 수입이 생겨요. 무엇보다 사람들에게 도움이 된다는 보람이 있어서 정말 좋아요.</p>
+      <div class="voice-person">
+        <div class="voice-avatar">박</div>
+        <div class="voice-info">
+          <strong>박○○님</strong>
+          <span>육아 중 파트타임으로 시작 → 현재 팀장</span>
+        </div>
+      </div>
+    </div>
+    <div class="voice-card fade-up">
+      <div class="quote-mark">"</div>
+      <p class="voice-text">처음엔 보험이라는 단어 자체가 낯설었는데, 멘토 선생님이 처음부터 끝까지 다 도와주셨어요. 혼자가 아니라는 게 제일 컸습니다.</p>
+      <div class="voice-person">
+        <div class="voice-avatar">이</div>
+        <div class="voice-info">
+          <strong>이○○님</strong>
+          <span>이직 후 경력단절 5년 → 활동 2년차</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="section-label" style="color: var(--gold); position: relative;">START TODAY</div>
+  <h2 class="section-title" style="margin-bottom: 16px;">
+    지금 바로 시작하세요<br/>
+    <span style="color: var(--gold); font-size: 0.85em;">첫 상담은 무료입니다</span>
+  </h2>
+  <p class="section-sub">연락처를 남겨주시면 24시간 내 담당 매니저가 연락드립니다</p>
+  <div style="position:relative;">
+    <a href="https://open.kakao.com/o/gprhIgoi" target="_blank" class="kakao-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-right:8px;">
+        <path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.607 5.086 4.077 6.563l-.9 3.355c-.077.287.244.522.496.356l4.02-2.658A11.99 11.99 0 0012 18.6c5.523 0 10-3.477 10-7.8S17.523 3 12 3z" fill="#3B1D1D"/>
+      </svg>
+      카카오 오픈채팅으로 상담하기
+    </a>
+  </div>
+  <p class="cta-note">✓ 카카오톡으로 바로 연결 &nbsp;·&nbsp; ✓ 강요 없음 &nbsp;·&nbsp; ✓ 부담 없는 커피 한 잔 같은 상담</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ELLE CAREER</div>
+  <div class="footer-text">© 2025 Elle Career. 여성의 새로운 시작을 응원합니다.</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  function handleSubmit() {
+    const input = document.querySelector('.cta-form input');
+    const val = input.value.trim();
+    if (!val) { input.style.borderColor = '#E57373'; input.focus(); return; }
+    input.style.borderColor = '#C9A96E';
+    const btn = document.querySelector('.cta-form button');
+    btn.textContent = '신청 완료 ✓';
+    btn.style.background = '#4CAF50';
+    input.value = '';
+    setTimeout(() => { btn.textContent = '상담 신청'; btn.style.background = ''; }, 3000);
+  }
+</script>
+</body>
+</html>
