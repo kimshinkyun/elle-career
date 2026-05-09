@@ -46,16 +46,20 @@ c_status= find_col(df, ["상태","status"])
 print(f"\n컬럼 매핑:")
 print(f"  회사이름: {c_name}  /  업종: {c_biz}  /  이메일: {c_email1}  /  팩스: {c_fax1}")
 
-# 이메일·팩스 유무 판별
+# 이메일·팩스 유무 판별 (이메일2·이메일3·팩스2 모두 포함)
 def has(col):
     if col is None:
         return pd.Series([False] * len(df))
-    s = df[col].str.strip()
-    # 이메일2/팩스2 있으면 합산
-    s2_col = {"이메일1": c_email2, "팩스1": c_fax2}.get(col)
-    if s2_col:
-        s = s | (df[s2_col].str.strip() != "")
-    return s != ""
+    result = df[col].str.strip() != ""
+    # 이메일1이면 이메일2·이메일3도 확인
+    if col == c_email1:
+        for extra in [c_email2, find_col(df, ["이메일3"])]:
+            if extra:
+                result = result | (df[extra].str.strip() != "")
+    # 팩스1이면 팩스2도 확인
+    if col == c_fax1 and c_fax2:
+        result = result | (df[c_fax2].str.strip() != "")
+    return result
 
 has_email = has(c_email1)
 has_fax   = has(c_fax1)
