@@ -24,13 +24,13 @@ SMTP_CONFIG = {
     #   2. 앱 비밀번호 생성 (16자리) → PASS 에 입력
     "HOST"  : "smtp.gmail.com",
     "PORT"  : 587,
-    "USER"  : "여기에_이메일@gmail.com",
-    "PASS"  : "여기에_앱비밀번호_16자리",     # Google 앱 비밀번호
+    "USER"  : "tlsrbs3000@gmail.com",
+    "PASS"  : "irguvuthntfytoud",
     # Naver 사용 시: HOST = "smtp.naver.com", PORT = 587
 }
 
 SENDER_NAME  = "법인전환 전문 컨설턴트"        # 발신자 이름
-REPLY_TO     = "여기에_회신받을_이메일@gmail.com"
+REPLY_TO     = "tlsrbs3000@gmail.com"
 KAKAO_CHANNEL= "[카카오채널명]"                # 카카오채널 이름
 PHONE        = "010-0000-0000"               # 연락처
 
