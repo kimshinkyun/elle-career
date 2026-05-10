@@ -89,19 +89,32 @@ def generate_content(client, industry: str, topic: str) -> dict:
 }}"""
 
     response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2000,
+        model="claude-haiku-4-5-20251001",
+        max_tokens=4096,
         system=system,
         messages=[{"role": "user", "content": prompt}]
     )
 
     raw = response.content[0].text.strip()
-    # JSON 파싱
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    return json.loads(raw.strip())
+    # JSON 블록 추출
+    if "```" in raw:
+        parts = raw.split("```")
+        for p in parts:
+            p = p.strip()
+            if p.startswith("json"):
+                p = p[4:].strip()
+            if p.startswith("{"):
+                raw = p
+                break
+    # 잘린 JSON 복구 시도
+    raw = raw.strip()
+    if not raw.endswith("}"):
+        last = max(raw.rfind("}"), 0)
+        raw = raw[:last+1]
+        # 열린 괄호 닫기
+        opens = raw.count("{") - raw.count("}")
+        raw += "}" * max(opens, 0)
+    return json.loads(raw)
 
 
 # ══════════════════════════════════════════════
