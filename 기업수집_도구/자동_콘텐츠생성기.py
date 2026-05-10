@@ -37,56 +37,55 @@ TOPICS = [
 # ══════════════════════════════════════════════
 # Claude API 호출
 # ══════════════════════════════════════════════
+def ask(client, system: str, prompt: str) -> str:
+    r = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=1500,
+        system=system,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return r.content[0].text.strip()
+
+
 def generate_content(client, industry: str, topic: str) -> dict:
     today = datetime.date.today()
     weekday = ["월", "화", "수", "목", "금", "토", "일"][today.weekday()]
 
-    system = """당신은 법인전환 전문 컨설턴트의 SNS 마케팅 담당자입니다.
-타겟: 연매출 3억~10억 개인사업자 사장님
-지역: 여수·순천·광양 (전남)
-목표: 법인전환 상담 문의 유도
-톤: 친근하고 전문적, 강요 없음
-항상 한국어로 작성하세요."""
+    sys_msg = f"""법인전환 컨설턴트 SNS 마케터. 업종:{industry} 주제:{topic}
+타겟: 연매출3억~10억 개인사업자. 지역: 여수·순천·광양. 한국어로만 답하세요."""
 
-    prompt = f"""오늘({today} {weekday}요일) 업로드할 SNS 콘텐츠를 생성해주세요.
+    def q(prompt): return ask(client, sys_msg, prompt)
 
-집중 업종: {industry}
-오늘의 주제: {topic}
+    print("  인스타 카드뉴스...", end=" ", flush=True)
+    ig_raw = q(f"""인스타 카드뉴스 5장 문구를 작성하세요.
+1장(후킹 제목 2줄) / 2장(문제제기 3줄) / 3장(해결책 3줄) / 4장(수치증거 3줄) / 5장(CTA 2줄)
+마지막에 피드캡션(100자)과 해시태그15개를 추가하세요.
+[1장]부터 [캡션] [해시태그] 형식으로 구분해서 작성하세요.""")
+    print("완료")
 
-아래 5가지를 각각 생성해주세요. 반드시 JSON 형식으로만 응답하세요:
+    print("  블로그 아웃라인...", end=" ", flush=True)
+    blog_raw = q(f"""네이버 블로그 글 아웃라인을 작성하세요.
+SEO제목 / 핵심키워드3개 / 도입부3문장 / 소제목4개 / 마무리CTA3문장
+각 항목을 [제목] [키워드] [도입] [소제목] [마무리] 로 구분하세요.""")
+    print("완료")
 
-{{
-  "instagram_card": {{
-    "slide1": "표지 문구 (후킹, 2~3줄)",
-    "slide2": "문제 제기 (3~4줄)",
-    "slide3": "해결책 (3~4줄)",
-    "slide4": "수치/증거 (3~4줄)",
-    "slide5": "CTA (2~3줄, DM 유도)",
-    "caption": "피드 캡션 전체 (150자 내외)",
-    "hashtags": "해시태그 20개"
-  }},
-  "blog_outline": {{
-    "title": "SEO 최적화 제목",
-    "keyword": "핵심 키워드 3개",
-    "intro": "도입부 (3~4문장)",
-    "sections": ["소제목1", "소제목2", "소제목3", "소제목4"],
-    "conclusion": "마무리 + CTA (3~4문장)"
-  }},
-  "shorts_script": {{
-    "hook": "0~3초 후킹 대사",
-    "body": "본론 대사 (15~25초 분량)",
-    "cta": "마무리 CTA 대사",
-    "title": "유튜브 제목",
-    "thumbnail": "썸네일 문구 (10자 내)"
-  }},
-  "dm_message": {{
-    "first": "첫 번째 DM 메시지 (3줄 이내, 스팸 아닌 자연스러운 접근)",
-    "followup": "3일 후 팔로업 DM (2줄)",
-    "after_no_reply": "7일 후 마지막 DM (2줄)"
-  }},
-  "email_subject": "이메일 제목 (클릭률 높은)",
-  "email_body": "이메일 본문 (200자 내외, 업종 맞춤)"
-}}"""
+    print("  쇼츠 대본...", end=" ", flush=True)
+    shorts_raw = q(f"""유튜브 쇼츠 대본(40초)을 작성하세요.
+[제목] [썸네일문구] [후킹3초] [본론20초] [CTA5초] 형식으로 구분하세요.""")
+    print("완료")
+
+    print("  DM+이메일...", end=" ", flush=True)
+    dm_raw = q(f"""인스타 DM 메시지 3종을 작성하세요.
+[첫DM](3줄이내) / [팔로업3일후](2줄) / [마지막7일후](2줄)
+그리고 이메일제목과 이메일본문(150자)도 [이메일제목] [이메일본문] 형식으로 추가하세요.""")
+    print("완료")
+
+    return {
+        "instagram_raw": ig_raw,
+        "blog_raw"     : blog_raw,
+        "shorts_raw"   : shorts_raw,
+        "dm_raw"       : dm_raw,
+    }
 
     response = client.messages.create(
         model="claude-haiku-4-5-20251001",
@@ -121,24 +120,11 @@ def generate_content(client, industry: str, topic: str) -> dict:
 # HTML 보고서 생성
 # ══════════════════════════════════════════════
 def make_html(data: dict, industry: str, topic: str, date_str: str) -> str:
-    c = data
-    ig = c.get("instagram_card", {})
-    bl = c.get("blog_outline", {})
-    sh = c.get("shorts_script", {})
-    dm = c.get("dm_message", {})
-
     def card(label, content):
         if not content:
             return ""
-        escaped = str(content).replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
-        return f"""
-        <div class="item">
-          <div class="item-label">{label}</div>
-          <div class="item-body">{escaped}</div>
-          <button class="copy-btn" onclick="copy(this)">복사</button>
-        </div>"""
-
-    sections_html = "".join(f"<li>{s}</li>" for s in bl.get("sections", []))
+        escaped = str(content).replace("<","&lt;").replace(">","&gt;").replace("\n","<br>")
+        return f'<div class="item"><div class="item-label">{label}</div><div class="item-body">{escaped}</div><button class="copy-btn" onclick="copy(this)">복사</button></div>'
 
     return f"""<!DOCTYPE html>
 <html lang="ko">
@@ -186,58 +172,31 @@ def make_html(data: dict, industry: str, topic: str, date_str: str) -> str:
   <button class="tab on" onclick="show('ig',this)">📸 인스타그램</button>
   <button class="tab" onclick="show('blog',this)">📝 블로그</button>
   <button class="tab" onclick="show('sh',this)">🎬 쇼츠</button>
-  <button class="tab" onclick="show('dm',this)">💬 DM</button>
-  <button class="tab" onclick="show('email',this)">📧 이메일</button>
+  <button class="tab" onclick="show('dm',this)">💬 DM+이메일</button>
 </div>
 
 <!-- 인스타그램 -->
 <div id="ig" class="pane on">
-  <span class="tag">📸 카드뉴스 5장</span>
-  {card("1장 — 표지 (후킹)", ig.get("slide1",""))}
-  {card("2장 — 문제 제기", ig.get("slide2",""))}
-  {card("3장 — 해결책", ig.get("slide3",""))}
-  {card("4장 — 수치/증거", ig.get("slide4",""))}
-  {card("5장 — CTA", ig.get("slide5",""))}
-  {card("📝 피드 캡션", ig.get("caption",""))}
-  {card("🏷️ 해시태그", ig.get("hashtags",""))}
+  <span class="tag">📸 카드뉴스 + 캡션 + 해시태그</span>
+  {card("인스타그램 카드뉴스", data.get("instagram_raw",""))}
 </div>
 
 <!-- 블로그 -->
 <div id="blog" class="pane">
   <span class="tag">📝 네이버 블로그 아웃라인</span>
-  {card("SEO 제목", bl.get("title",""))}
-  {card("핵심 키워드", bl.get("keyword",""))}
-  {card("도입부", bl.get("intro",""))}
-  <div class="item">
-    <div class="item-label">본문 소제목 구성</div>
-    <ul class="sections">{sections_html}</ul>
-  </div>
-  {card("마무리 + CTA", bl.get("conclusion",""))}
+  {card("블로그 아웃라인", data.get("blog_raw",""))}
 </div>
 
 <!-- 쇼츠 -->
 <div id="sh" class="pane">
   <span class="tag">🎬 유튜브 쇼츠 대본</span>
-  {card("유튜브 제목", sh.get("title",""))}
-  {card("썸네일 문구", sh.get("thumbnail",""))}
-  {card("0~3초 후킹", sh.get("hook",""))}
-  {card("본론 대사", sh.get("body",""))}
-  {card("마무리 CTA", sh.get("cta",""))}
+  {card("쇼츠 대본", data.get("shorts_raw",""))}
 </div>
 
-<!-- DM -->
+<!-- DM + 이메일 -->
 <div id="dm" class="pane">
-  <span class="tag">💬 인스타그램 DM 메시지</span>
-  {card("첫 번째 DM", dm.get("first",""))}
-  {card("3일 후 팔로업", dm.get("followup",""))}
-  {card("7일 후 마지막", dm.get("after_no_reply",""))}
-</div>
-
-<!-- 이메일 -->
-<div id="email" class="pane">
-  <span class="tag">📧 이메일 발송</span>
-  {card("이메일 제목", c.get("email_subject",""))}
-  {card("이메일 본문", c.get("email_body",""))}
+  <span class="tag">💬 DM + 📧 이메일</span>
+  {card("DM 메시지 + 이메일", data.get("dm_raw",""))}
 </div>
 
 <script>
