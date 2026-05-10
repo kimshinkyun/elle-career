@@ -92,6 +92,8 @@ def main():
             run("이메일_자동발송.py")
         elif choice == "3":
             clear()
+            print("anthropic 설치 중...\n")
+            subprocess.run([sys.executable, "-m", "pip", "install", "anthropic", "-q"], cwd=BASE)
             print("SNS 콘텐츠 생성 시작...\n")
             run("자동_콘텐츠생성기.py")
         elif choice == "4":
