@@ -16,7 +16,7 @@ import random
 # ══════════════════════════════════════════════
 # 설정 (여기만 수정하세요)
 # ══════════════════════════════════════════════
-CLAUDE_API_KEY = "여기에_API_키_입력"   # https://console.anthropic.com 에서 발급
+CLAUDE_API_KEY = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_key.txt")).read().strip() if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_key.txt")) else "여기에_API_키_입력"
 OUTPUT_DIR     = os.path.join(os.path.dirname(os.path.abspath(__file__)), "콘텐츠생성결과")
 
 # 오늘 집중할 업종 (순환)
