@@ -34,7 +34,7 @@ REPLY_TO     = "여기에_회신받을_이메일@gmail.com"
 KAKAO_CHANNEL= "[카카오채널명]"                # 카카오채널 이름
 PHONE        = "010-0000-0000"               # 연락처
 
-BASE_DIR     = r"C:\Users\user\Desktop\기업수집"
+BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 LOG_FILE     = os.path.join(BASE_DIR, "발송기록.csv")
 
 DAILY_LIMIT  = 80     # 하루 최대 발송 수 (Gmail 한도: 500, 안전하게 80~100)

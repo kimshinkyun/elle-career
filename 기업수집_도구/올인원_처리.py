@@ -6,7 +6,7 @@
 import pandas as pd
 import os, json, datetime, glob
 
-BASE   = r"C:\Users\user\Desktop\기업수집"
+BASE   = os.path.dirname(os.path.abspath(__file__))
 
 # 크롤링결과 파일 자동 탐지 (날짜 상관없이)
 pattern = os.path.join(BASE, "크롤링결과*.xlsx")

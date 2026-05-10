@@ -17,7 +17,7 @@ import random
 # 설정 (여기만 수정하세요)
 # ══════════════════════════════════════════════
 CLAUDE_API_KEY = "여기에_API_키_입력"   # https://console.anthropic.com 에서 발급
-OUTPUT_DIR     = r"C:\Users\user\Desktop\기업수집\콘텐츠생성결과"
+OUTPUT_DIR     = os.path.join(os.path.dirname(os.path.abspath(__file__)), "콘텐츠생성결과")
 
 # 오늘 집중할 업종 (순환)
 INDUSTRIES = ["제조업", "도소매업", "음식업/요식업", "병원/의원", "건설/인테리어", "서비스업"]
