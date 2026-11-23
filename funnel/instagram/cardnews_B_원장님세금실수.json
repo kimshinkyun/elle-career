@@ -1,0 +1,70 @@
+{
+  "cards": [
+    {
+      "theme": "slate",
+      "tag": "체크",
+      "title": "원장님 12월\n놓치기 쉬운 3가지",
+      "subtitle": "",
+      "desc": "5월에 후회하기 전에\n지금 확인하세요",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 48,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "1번",
+      "title": "내 구간을\n모르고 지나감",
+      "subtitle": "",
+      "desc": "과세표준이 한 구간만 올라도\n세율이 크게 달라집니다\n12월에 한 번은 점검하세요",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 50,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "2번",
+      "title": "공제는 연말\n기한이 있어요",
+      "subtitle": "",
+      "desc": "해당 과세연도 안에\n끝나야 하는 항목이 많습니다\n1월엔 이미 늦어요",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 50,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "3번",
+      "title": "한도와 조건을\n안 읽고 결정",
+      "subtitle": "",
+      "desc": "공제 한도, 사후관리 조건은\n상품마다 다릅니다\n세무사 확인은 필수예요",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 50,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "무료",
+      "title": "내 구간 확인\n3분 계산기",
+      "subtitle": "DM으로 '세금'",
+      "desc": "결과는 바로 열립니다\n광고 수신은 선택이에요",
+      "caption": "원장님 연말 세금 점검 3가지와 3분 계산기 📩\n댓글이나 DM으로 '세금' 이라고 남기면 링크를 보내드려요.\n※ 일반 세금 정보이며 개인별 적용은 세무사 확인이 필요합니다.\n\n#원장님 #개원의 #병원경영 #종합소득세 #절세 #소득공제 #병원세무 #연말점검 #개원준비\n프로필 링크",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 50,
+      "subtitleSize": 26,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    }
+  ]
+}

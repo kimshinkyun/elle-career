@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>원장님 연말 세금 3분 계산기</title>
+<meta name="description" content="원장님 소득 구간별 소득공제 절세 효과를 3분 만에 추정해 보세요. 세금 정보 제공 목적의 참고용 계산기입니다." />
+<meta name="robots" content="noindex" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#0F1B33; --navy2:#17284A; --gold:#C9A96E; --gold2:#E8D5B0;
+    --bg:#F6F4EF; --card:#fff; --text:#1d2433; --mid:#667085; --line:#E4E0D6;
+    --ok:#1E8E5A; --err:#C0392B;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px}
+  header.hero{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;padding:36px 0 44px}
+  .badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);border-radius:99px;padding:4px 14px;font-size:.75rem;letter-spacing:.08em;margin-bottom:16px}
+  h1{font-size:clamp(1.55rem,6.4vw,2.1rem);line-height:1.3;font-weight:900}
+  h1 em{font-style:normal;color:var(--gold)}
+  .sub{margin-top:12px;color:#c8d0e0;font-size:.95rem}
+  .trust{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px;font-size:.8rem;color:var(--gold2)}
+  .card{background:var(--card);border-radius:16px;padding:22px 18px;margin:-22px 0 18px;box-shadow:0 8px 28px rgba(15,27,51,.10)}
+  .card+.card{margin-top:0}
+  .steps{display:flex;gap:6px;margin-bottom:16px}
+  .steps span{flex:1;height:4px;border-radius:4px;background:var(--line)}
+  .steps span.on{background:var(--gold)}
+  h2{font-size:1.15rem;margin-bottom:4px}
+  .hint{color:var(--mid);font-size:.82rem;margin-bottom:14px}
+  label.f{display:block;font-weight:700;font-size:.88rem;margin:14px 0 6px}
+  label.f small{font-weight:400;color:var(--mid)}
+  input[type=text],input[type=tel],input[type=email],input[type=number],select{
+    width:100%;font:inherit;font-size:16px;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--text)}
+  input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.25)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--navy);color:#fff;font:inherit;font-weight:700;font-size:1.02rem;padding:16px;margin-top:20px;cursor:pointer}
+  .btn:hover{background:var(--navy2)}
+  .btn.gold{background:var(--gold);color:var(--navy)}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+  .back{background:none;border:0;color:var(--mid);font:inherit;font-size:.85rem;margin-top:12px;cursor:pointer;text-decoration:underline}
+  .err{color:var(--err);font-size:.8rem;margin-top:4px;display:none}
+  .invalid input,.invalid select{border-color:var(--err)}
+  .invalid .err{display:block}
+  /* consent */
+  fieldset.consent{border:1.5px solid var(--line);border-radius:12px;padding:14px;margin-top:18px}
+  fieldset.consent legend{padding:0 6px;font-weight:700;font-size:.85rem}
+  .chk{display:flex;gap:10px;align-items:flex-start;margin:10px 0;font-size:.86rem}
+  .chk input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--navy)}
+  .chk .req{color:var(--err);font-weight:700}
+  .chk .opt{color:var(--mid);font-weight:700}
+  details{font-size:.78rem;color:var(--mid);margin:4px 0 4px 30px}
+  details summary{cursor:pointer;text-decoration:underline}
+  details p{margin-top:6px;white-space:pre-line}
+  .channels{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 6px 30px;font-size:.86rem}
+  .channels label{display:flex;gap:6px;align-items:center}
+  .channels input{width:18px;height:18px;accent-color:var(--navy)}
+  .notice{background:#F3EFE3;border-radius:10px;padding:10px 12px;font-size:.8rem;color:#5b5133;margin-top:14px}
+  /* result */
+  .big{font-size:2.2rem;font-weight:900;color:var(--navy);line-height:1.15}
+  .big small{font-size:1rem;font-weight:700}
+  .kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.9rem}
+  .kv b{font-variant-numeric:tabular-nums}
+  .kv.last{border:0}
+  .tag{display:inline-block;background:var(--navy);color:var(--gold);border-radius:6px;padding:2px 9px;font-size:.75rem;font-weight:700;margin-bottom:10px}
+  .disc{font-size:.74rem;color:var(--mid);margin-top:16px;white-space:pre-line}
+  .hidden{display:none!important}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  footer{padding:8px 0 40px;font-size:.74rem;color:var(--mid)}
+  footer a{color:var(--mid)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="badge">원장님 전용 · 무료 · 3분</span>
+    <h1>올해 소득, 이 구간이면<br /><em>세금이 이만큼</em> 달라집니다</h1>
+    <p class="sub">연말 전에 한 번만 계산해 보세요. 소득 구간별 소득공제 효과를 추정해 드립니다.</p>
+    <div class="trust"><span>✔ 가입 없이 결과 확인</span><span>✔ 광고 수신은 선택</span><span>✔ 소득 원본값은 저장하지 않습니다</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- STEP 1 : 계산 입력 -->
+  <section class="card" id="s1">
+    <div class="steps"><span class="on"></span><span></span><span></span></div>
+    <h2>① 내 소득 구간 입력</h2>
+    <p class="hint">대략적인 숫자면 충분해요. (단위: 만원)</p>
+
+    <div class="field" data-field="income">
+      <label class="f" for="income">올해 예상 종합소득금액 <small>(수입 − 필요경비)</small></label>
+      <input id="income" type="number" inputmode="numeric" min="0" placeholder="예) 25000 (= 2.5억)" />
+      <div class="err">0보다 큰 금액을 입력해 주세요.</div>
+    </div>
+    <div class="field" data-field="other">
+      <label class="f" for="other">기타 소득공제 합계 <small>(인적공제·보험료 등, 모르면 그대로 두세요)</small></label>
+      <input id="other" type="number" inputmode="numeric" min="0" value="300" />
+    </div>
+    <div class="field" data-field="invest">
+      <label class="f" for="invest">소득공제 대상 출자 검토액 <small>(예: 3000)</small></label>
+      <input id="invest" type="number" inputmode="numeric" min="0" placeholder="예) 3000 (= 3천만원)" />
+      <div class="err">0보다 큰 금액을 입력해 주세요.</div>
+    </div>
+    <button class="btn" id="to2" type="button">다음 → 결과 받을 곳 입력</button>
+  </section>
+
+  <!-- STEP 2 : 신청 폼 + 동의 -->
+  <section class="card hidden" id="s2">
+    <div class="steps"><span class="on"></span><span class="on"></span><span></span></div>
+    <h2>② 결과 확인 · 상담 정보</h2>
+    <p class="hint">아래 정보를 입력하면 결과가 바로 열립니다. <b>광고 수신에 동의하지 않아도 결과는 그대로 제공됩니다.</b></p>
+
+    <form id="leadForm" novalidate autocomplete="on">
+      <input class="hp" type="text" name="company_url" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <div class="field" data-field="hospital">
+        <label class="f" for="hospital">병원명</label>
+        <input id="hospital" name="hospital" type="text" autocomplete="organization" placeholder="예) ○○내과의원" />
+        <div class="err">병원명을 입력해 주세요.</div>
+      </div>
+      <div class="row">
+        <div class="field" data-field="name">
+          <label class="f" for="name">성함</label>
+          <input id="name" name="name" type="text" autocomplete="name" placeholder="홍길동" />
+          <div class="err">성함을 입력해 주세요.</div>
+        </div>
+        <div class="field" data-field="role">
+          <label class="f" for="role">직책</label>
+          <select id="role" name="role">
+            <option>대표원장</option><option>공동원장</option><option>봉직의</option><option>개원 준비 중</option><option>기타</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" data-field="phone">
+        <label class="f" for="phone">연락처 <small>(휴대전화)</small></label>
+        <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" />
+        <div class="err">휴대전화 번호를 정확히 입력해 주세요.</div>
+      </div>
+      <div class="row">
+        <div class="field" data-field="specialty">
+          <label class="f" for="specialty">진료과</label>
+          <select id="specialty" name="specialty">
+            <option>내과</option><option>가정의학과</option><option>정형외과</option><option>피부과</option><option>성형외과</option>
+            <option>안과</option><option>이비인후과</option><option>소아청소년과</option><option>산부인과</option><option>비뇨의학과</option>
+            <option>정신건강의학과</option><option>영상의학과</option><option>마취통증의학과</option><option>치과</option><option>한의원</option><option>기타</option>
+          </select>
+        </div>
+        <div class="field" data-field="stage">
+          <label class="f" for="stage">운영 단계</label>
+          <select id="stage" name="stage">
+            <option>운영 중 (3년 미만)</option><option>운영 중 (3년 이상)</option><option>개원 준비 (1년 내)</option><option>검토 단계</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" data-field="email">
+        <label class="f" for="email">이메일 <small>(선택 · 자료 PDF를 받을 주소)</small></label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="doctor@example.com" />
+        <div class="err">이메일 형식을 확인해 주세요.</div>
+      </div>
+
+      <fieldset class="consent">
+        <legend>동의 항목 (항목별로 직접 선택)</legend>
+
+        <div class="chk" data-field="privacy">
+          <input type="checkbox" id="c_privacy" name="c_privacy" />
+          <label for="c_privacy"><span class="req">[필수]</span> 개인정보 수집·이용에 동의합니다.</label>
+        </div>
+        <details><summary>자세히 보기</summary>
+          <p id="privacyText"></p></details>
+        <div class="err" id="err_privacy" style="margin-left:30px">필수 동의가 있어야 결과를 열 수 있어요.</div>
+
+        <div class="chk">
+          <input type="checkbox" id="c_consult" name="c_consult" />
+          <label for="c_consult"><span class="opt">[선택]</span> 계산 결과에 대한 <b>1:1 상담</b>을 신청합니다. (신청하신 경우에만 상담 연락을 드립니다)</label>
+        </div>
+
+        <div class="chk">
+          <input type="checkbox" id="c_marketing" name="c_marketing" />
+          <label for="c_marketing"><span class="opt">[선택]</span> <b>(광고)</b> <span class="senderName"></span>의 세금·자금·병원경영 정보 및 서비스 안내를 받는 것에 동의합니다.</label>
+        </div>
+        <div class="channels" id="channels">
+          <label><input type="checkbox" name="ch_sms" /> 문자</label>
+          <label><input type="checkbox" name="ch_email" /> 이메일</label>
+          <label><input type="checkbox" name="ch_kakao" /> 카카오톡</label>
+        </div>
+        <div class="err" id="err_channel" style="margin-left:30px">광고 수신 동의 시 받을 방법을 1개 이상 선택해 주세요.</div>
+        <details><summary>광고성 정보 수신 안내</summary>
+          <p id="marketingText"></p></details>
+      </fieldset>
+
+      <div class="notice">동의하지 않아도 계산 결과 확인에는 불이익이 없습니다. 수신 동의는 언제든 철회할 수 있고, 야간(21시~08시)에는 별도 동의 없이 광고를 보내지 않습니다.</div>
+
+      <button class="btn gold" id="submitBtn" type="submit">내 결과 보기</button>
+      <button class="back" id="back1" type="button">← 숫자 다시 입력</button>
+    </form>
+  </section>
+
+  <!-- STEP 3 : 결과 -->
+  <section class="card hidden" id="s3" aria-live="polite">
+    <div class="steps"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+    <span class="tag">추정 결과</span>
+    <div class="kv" style="border:0;padding-top:0"><span>입력하신 출자액 기준 추정 절세액</span></div>
+    <div class="big"><span id="rSaved">0</span><small> 만원</small></div>
+    <p class="hint" style="margin-top:6px">소득세 + 지방소득세(10%) 포함 · 참고용 추정치</p>
+
+    <div class="kv" style="margin-top:12px"><span>적용 최고세율(한계세율)</span><b id="rRate">-</b></div>
+    <div class="kv"><span>공제 전 추정 세금</span><b id="rBefore">-</b></div>
+    <div class="kv"><span>공제 후 추정 세금</span><b id="rAfter">-</b></div>
+    <div class="kv"><span>적용된 소득공제액</span><b id="rDeduct">-</b></div>
+    <div class="kv last"><span>소득공제 한도(종합소득금액의 50%) 적용</span><b id="rCap">-</b></div>
+
+    <div class="notice" id="rNote"></div>
+
+    <div id="consultDone" class="notice hidden" style="background:#E6F4EC;color:#14532d">✔ 1:1 상담 신청이 접수되었어요. 신청 시 남겨주신 연락처로 곧 연락드릴게요.</div>
+
+    <p class="disc" id="disclaimer"></p>
+    <button class="btn" type="button" id="again">다른 금액으로 다시 계산</button>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="senderName"></span> · <a id="privacyLink" href="#" target="_blank" rel="noopener">개인정보처리방침</a> ·
+    <a id="optoutLink" href="#" target="_blank" rel="noopener">수신거부/동의철회</a>
+  </div>
+</footer>
+
+<script>
+/* ═════════ 설정 (배포 전 반드시 채우기) ═════════ */
+const CONFIG = {
+  SENDER_NAME: "【보내는 이름 확정 필요】",     // 시드파트너스 / MAKERS / 부승파트너스 중 하나로 통일
+  SENDER_CONTACT: "【대표번호/이메일】",         // 수신거부·철회 접수처
+  ENDPOINT_URL: "",                             // backend/apps-script.gs 배포 URL
+  PRIVACY_URL: "#",                             // 개인정보처리방침 URL
+  OPTOUT_URL: "#",                              // 수신거부/동의철회 페이지 URL
+  RETENTION: "동의 철회 시 또는 수집일로부터 3년",   // 보유기간(법무 확인 후 확정)
+  CONSENT_VERSION: "2026-11-v1"                 // 문구 바꿀 때마다 올리기 (동의 로그에 같이 저장됨)
+};
+
+/* ═════════ 세법 데이터 (귀속 2025 기준 · 매년 확인) ═════════ */
+// [과세표준 상한(원), 세율, 누진공제(원)]
+const BRACKETS = [
+  [14e6, .06, 0], [50e6, .15, 1.26e6], [88e6, .24, 5.76e6], [150e6, .35, 15.44e6],
+  [300e6, .38, 19.94e6], [500e6, .40, 25.94e6], [1000e6, .42, 35.94e6], [Infinity, .45, 65.94e6]
+];
+// 출자액 구간별 공제율 (3천만 이하 100% / 3천~5천 70% / 5천 초과 30%) · 종합소득금액의 50% 한도
+const DEDUCT_TIERS = [[30e6, 1.0], [50e6, .7], [Infinity, .3]];
+const DEDUCT_CAP_RATE = .5;
+
+const MAN = 1e4;
+const fmt = n => Math.round(n).toLocaleString("ko-KR");
+const fmtMan = won => fmt(won / MAN) + "만원";
+
+function taxOf(taxable){
+  if (taxable <= 0) return {tax:0, rate:0};
+  for (const [lim, r, d] of BRACKETS) if (taxable <= lim) return {tax: taxable * r - d, rate: r};
+}
+function tieredDeduction(invest){
+  let rest = invest, prev = 0, ded = 0;
+  for (const [lim, rate] of DEDUCT_TIERS){
+    const slice = Math.min(rest, lim - prev);
+    if (slice <= 0) break;
+    ded += slice * rate; rest -= slice; prev = lim;
+  }
+  return ded;
+}
+function calc(incomeMan, otherMan, investMan){
+  const income = incomeMan * MAN, other = otherMan * MAN, invest = investMan * MAN;
+  const base = Math.max(0, income - other);
+  const before = taxOf(base);
+  const rawDed = tieredDeduction(invest);
+  const cap = income * DEDUCT_CAP_RATE;
+  const ded = Math.min(rawDed, cap);
+  const after = taxOf(Math.max(0, base - ded));
+  const taxB = before.tax * 1.1, taxA = after.tax * 1.1;    // 지방소득세 10% 포함
+  return {rate: before.rate, taxB, taxA, saved: taxB - taxA, ded, capped: rawDed > cap, cap};
+}
+function leadGrade(rate){            // 한계세율 기준 영업 우선순위
+  if (rate >= .40) return "A"; if (rate >= .35) return "B"; if (rate >= .24) return "C"; return "D";
+}
+
+/* ═════════ 동의 문구 (버전 관리) ═════════ */
+const TEXT_PRIVACY =
+`① 수집·이용 목적: 계산 결과 제공, 신청 시 상담 연락, 본인 확인
+② 수집 항목: 병원명, 성함, 직책, 휴대전화, 진료과, 운영 단계, (선택) 이메일, 계산 구간 정보(한계세율·추정 절세액)
+   ※ 입력하신 소득·출자 금액의 원본 값은 저장하지 않습니다.
+③ 보유·이용 기간: ${CONFIG.RETENTION}
+④ 동의를 거부할 권리가 있으며, 거부 시 결과 확인이 제한됩니다.
+⑤ 처리 책임자: ${CONFIG.SENDER_NAME} (${CONFIG.SENDER_CONTACT})`;
+const TEXT_MARKETING =
+`(광고) 전송자: ${CONFIG.SENDER_NAME}
+수신 내용: 세금·자금·병원경영 정보 및 서비스 안내
+수신 방법: 위에서 선택한 문자/이메일/카카오톡
+동의는 선택이며, 동의하지 않아도 결과 확인과 서비스 이용에 불이익이 없습니다.
+언제든 ${CONFIG.OPTOUT_URL === "#" ? CONFIG.SENDER_CONTACT : "수신거부 페이지"}를 통해 철회할 수 있습니다.
+수신 동의는 2년마다 유지 여부를 확인합니다.`;
+const TEXT_DISCLAIMER =
+`※ 본 계산기는 세금 정보 제공 목적의 참고용 추정이며 투자 권유·세무 자문이 아닙니다.
+※ 세율은 귀속 2025 종합소득세율(지방소득세 10% 별도 반영) 기준이며, 공제율·한도·사후관리(회수 시 추징 등)는 상품·개인 상황·연도에 따라 달라질 수 있습니다.
+※ 실제 적용 여부와 금액은 반드시 세무사 등 전문가와 확인하세요.`;
+
+/* ═════════ UI ═════════ */
+const $ = id => document.getElementById(id);
+const show = id => { ["s1","s2","s3"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo({top:0,behavior:"smooth"}); };
+document.querySelectorAll(".senderName").forEach(e => e.textContent = CONFIG.SENDER_NAME);
+$("privacyText").textContent = TEXT_PRIVACY;
+$("marketingText").textContent = TEXT_MARKETING;
+$("disclaimer").textContent = TEXT_DISCLAIMER;
+$("privacyLink").href = CONFIG.PRIVACY_URL;
+$("optoutLink").href = CONFIG.OPTOUT_URL;
+
+let calcState = null;
+function setInvalid(field, bad){ const el = document.querySelector(`[data-field="${field}"]`); if (el) el.classList.toggle("invalid", bad); return bad; }
+
+$("to2").addEventListener("click", () => {
+  const income = parseFloat($("income").value), other = parseFloat($("other").value) || 0, invest = parseFloat($("invest").value);
+  const bad1 = setInvalid("income", !(income > 0)), bad2 = setInvalid("invest", !(invest > 0));
+  if (bad1 || bad2) return;
+  calcState = {income, other, invest, res: calc(income, other, invest)};
+  show("s2");
+});
+$("back1").addEventListener("click", () => show("s1"));
+$("again").addEventListener("click", () => show("s1"));
+
+/* 연락처 정규화: 010-1234-5678 */
+function normPhone(v){ const d = v.replace(/\D/g, ""); return /^01[016789]\d{7,8}$/.test(d) ? d.replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3") : null; }
+$("phone").addEventListener("input", e => {
+  const d = e.target.value.replace(/\D/g, "").slice(0, 11);
+  e.target.value = d.length > 7 ? d.replace(/^(\d{3})(\d{4})(\d{0,4})$/, "$1-$2-$3").replace(/-$/, "")
+                  : d.length > 3 ? d.replace(/^(\d{3})(\d{0,4})$/, "$1-$2") : d;
+});
+
+/* UTM / 유입 정보 */
+const qs = new URLSearchParams(location.search);
+const attribution = {
+  utm_source: qs.get("utm_source") || "", utm_medium: qs.get("utm_medium") || "", utm_campaign: qs.get("utm_campaign") || "",
+  utm_content: qs.get("utm_content") || "", referrer: document.referrer || "", landing: location.pathname
+};
+
+$("leadForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target;
+  if (f.company_url.value) return;                       // 허니팟(봇)
+
+  const hospital = f.hospital.value.trim(), name = f.name.value.trim();
+  const phone = normPhone(f.phone.value), email = f.email.value.trim();
+  const sms = f.ch_sms.checked, mail = f.ch_email.checked, kakao = f.ch_kakao.checked;
+  const marketing = f.c_marketing.checked;
+
+  let bad = false;
+  bad = setInvalid("hospital", !hospital) || bad;
+  bad = setInvalid("name", !name) || bad;
+  bad = setInvalid("phone", !phone) || bad;
+  bad = setInvalid("email", !!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) || bad;
+  const privacyBad = !f.c_privacy.checked; $("err_privacy").style.display = privacyBad ? "block" : "none"; bad = privacyBad || bad;
+  const chBad = marketing && !(sms || mail || kakao); $("err_channel").style.display = chBad ? "block" : "none"; bad = chBad || bad;
+  // 마케팅 동의했는데 이메일 채널만 고르고 이메일 미입력
+  const emailBad = marketing && mail && !email; if (emailBad) setInvalid("email", true); bad = emailBad || bad;
+  if (bad) { document.querySelector(".invalid, [style*='display: block']")?.scrollIntoView({behavior:"smooth",block:"center"}); return; }
+
+  const r = calcState.res, nowIso = new Date().toISOString();
+  const payload = {
+    submitted_at: nowIso,
+    hospital, name, role: f.role.value, phone, email,
+    specialty: f.specialty.value, stage: f.stage.value,
+    // 계산 구간 정보만 저장 (소득 원본값 미저장 = 데이터 최소화)
+    marginal_rate: Math.round(r.rate * 100), est_saving_man: Math.round(r.saved / MAN), lead_grade: leadGrade(r.rate),
+    consent: {
+      privacy: true,
+      consult_request: f.c_consult.checked,
+      marketing: marketing,
+      channels: marketing ? {sms, email: mail, kakao} : {sms:false, email:false, kakao:false},
+      version: CONFIG.CONSENT_VERSION,
+      sender: CONFIG.SENDER_NAME,
+      privacy_text: TEXT_PRIVACY, marketing_text: TEXT_MARKETING,   // 당시 문구 스냅샷(입증용)
+      user_agent: navigator.userAgent
+    },
+    attribution
+  };
+
+  const btn = $("submitBtn"); btn.disabled = true; btn.textContent = "처리 중…";
+  await sendLead(payload);
+  renderResult(r, f.c_consult.checked);
+  btn.disabled = false; btn.textContent = "내 결과 보기";
+});
+
+/* 전송: 실패해도 결과는 보여주고, 로컬 대기열에 보관 후 재시도 */
+async function sendLead(p){
+  const queueKey = "lead_queue_v1";
+  const queue = JSON.parse(localStorage.getItem(queueKey) || "[]"); queue.push(p);
+  localStorage.setItem(queueKey, JSON.stringify(queue));
+  if (!CONFIG.ENDPOINT_URL){ console.warn("ENDPOINT_URL 미설정: 로컬 대기열에만 저장됨"); return; }
+  const remain = [];
+  for (const item of queue){
+    try{
+      await fetch(CONFIG.ENDPOINT_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(item)});
+    }catch(err){ remain.push(item); }
+  }
+  localStorage.setItem(queueKey, JSON.stringify(remain));
+}
+window.addEventListener("online", () => { const q = JSON.parse(localStorage.getItem("lead_queue_v1")||"[]"); if (q.length && CONFIG.ENDPOINT_URL) sendLead(q.pop()); });
+
+function renderResult(r, consult){
+  $("rSaved").textContent = fmt(r.saved / MAN);
+  $("rRate").textContent = r.rate ? Math.round(r.rate * 100) + "%" : "-";
+  $("rBefore").textContent = fmtMan(r.taxB);
+  $("rAfter").textContent = fmtMan(r.taxA);
+  $("rDeduct").textContent = fmtMan(r.ded);
+  $("rCap").textContent = r.capped ? "한도 적용됨" : "한도 이내";
+  $("rNote").textContent = r.capped
+    ? "입력하신 출자액의 공제액이 한도(종합소득금액의 50%)를 넘어, 한도까지만 반영했어요."
+    : "구간별 공제율(3천만원 이하 100% · 3천~5천 70% · 5천 초과 30%)을 순서대로 적용한 값이에요.";
+  $("consultDone").classList.toggle("hidden", !consult);
+  show("s3");
+}
+</script>
+</body>
+</html>

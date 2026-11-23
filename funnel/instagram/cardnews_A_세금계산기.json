@@ -1,0 +1,83 @@
+{
+  "cards": [
+    {
+      "theme": "slate",
+      "tag": "원장님",
+      "title": "연말 전에\n3분만 계산",
+      "subtitle": "",
+      "desc": "같은 소득인데\n세금이 수천만원 다릅니다\n내 구간부터 확인하세요",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 54,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "착각",
+      "title": "소득이 높을수록\n공제가 더 큽니다",
+      "subtitle": "",
+      "desc": "세율은 구간마다 달라서\n같은 1천만원 공제도\n효과가 6%~45%로 갈려요",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 46,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "구간표",
+      "title": "내 최고세율\n얼마인가요",
+      "subtitle": "",
+      "desc": "과세표준 5천만 초과  24%\n8,800만 초과  35%\n1.5억 초과  38%\n3억 초과  40%\n5억 초과  42%",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 48,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "예시",
+      "title": "2.5억 원장님\n3천만원 공제",
+      "subtitle": "",
+      "desc": "소득세+지방세 기준\n추정 절세 약 1,254만원\n(참고용 추정치)",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 48,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "주의",
+      "title": "공제엔 한도와\n조건이 있어요",
+      "subtitle": "",
+      "desc": "종합소득금액의 50% 한도\n사후관리 조건 확인 필수\n세무사와 꼭 최종 확인",
+      "caption": "",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 46,
+      "descSize": 24,
+      "footerText": "@mul_a_bo_semu"
+    },
+    {
+      "theme": "slate",
+      "tag": "무료",
+      "title": "3분 계산기\n프로필 링크",
+      "subtitle": "DM으로 '세금' 보내기",
+      "desc": "가입 없이 결과 확인\n광고 수신은 선택\n소득 원본값은 저장 안 함",
+      "caption": "연말 소득공제, 내 구간에서 얼마나 달라질까요? 3분 계산기를 무료로 열어두었습니다 📩\n댓글이나 DM으로 '세금' 이라고 남기면 링크를 보내드려요.\n※ 세금 정보 제공 목적의 참고용 추정이며 투자 권유가 아닙니다. 공제율·한도·조건은 개인 상황에 따라 다르니 세무사와 최종 확인하세요.\n\n#원장님 #개원의 #병원경영 #종합소득세 #절세 #연말정산 #소득공제 #병원세무 #개원준비 #의사재테크\n프로필 링크",
+      "layout": "center",
+      "imgSlots": 0,
+      "titleSize": 50,
+      "subtitleSize": 26,
+      "descSize": 22,
+      "footerText": "@mul_a_bo_semu"
+    }
+  ]
+}
