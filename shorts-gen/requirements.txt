@@ -1,0 +1,7 @@
+faster-whisper>=1.0.3
+anthropic>=0.40.0
+streamlit>=1.38
+yt-dlp
+opencv-python-headless
+fonttools
+pytest
