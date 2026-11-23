@@ -16,6 +16,7 @@ st.set_page_config(page_title="쇼츠 생성기", page_icon="🎬", layout="cent
 st.markdown("""<style>
 .chip{display:inline-block;padding:3px 12px;border-radius:8px;background:#2a2450;color:#c9b8ff;font-weight:700;font-size:.85rem;border:1px solid #473f87}
 .tl{color:#9aa4b2;font-size:.85rem}
+h3,h2,h1{word-break:keep-all}
 </style>""", unsafe_allow_html=True)
 
 if not have_ffmpeg():
@@ -147,7 +148,8 @@ else:
                 with st.spinner("렌더링 중…"):
                     rerender(out, i, t, ns, ne, lay, cs, ft, font)
                 st.rerun()
-        st.markdown(f"<div class='tl'>원본 영상 타임라인</div>**⏱ {mmss(c['start'])} ~ {mmss(c['end'])}**  ({int(c['end'] - c['start'])}초)", unsafe_allow_html=True)
+        st.markdown("<div class='tl'>원본 영상 타임라인</div>", unsafe_allow_html=True)
+        st.markdown(f"**⏱ {mmss(c['start'])} ~ {mmss(c['end'])}**  ({int(c['end'] - c['start'])}초)")
         with st.expander("AI 설명 · 스크립트 보기"):
             if c.get("summary"):
                 st.info(f"✦ **AI 하이라이트**  \n{c['summary']}")

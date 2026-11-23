@@ -102,7 +102,8 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
         l1, l2 = split_title(title)
         text = WHITE + _esc(l1) + ((r"\N" + ACCENT + _esc(l2)) if l2 else "")
         end = dur if stack else min(title_secs, dur)      # stack은 제목 상시 표시
-        ev.append(f"Dialogue: 1,{_t(0)},{_t(end)},Title,,0,0,0,,{{\\fad(150,0)}}{text}")
+        fade = "" if stack else r"{\fad(150,0)}"      # stack은 첫 프레임(썸네일)에도 제목이 보이도록 페이드 없음
+        ev.append(f"Dialogue: 1,{_t(0)},{_t(end)},Title,,0,0,0,,{fade}{text}")
     if footer and stack:
         ev.append(f"Dialogue: 1,{_t(0)},{_t(dur)},Foot,,0,0,0,,{_esc(footer)}")
     inside = [w for w in words if w.end > clip_start and w.start < clip_end]
