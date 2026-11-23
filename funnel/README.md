@@ -1,21 +1,24 @@
-# 원장님 리드 퍼널
+# 원장님 리드 퍼널 (MAKERS)
 
-인스타 릴스/카드뉴스 → 프로필 링크·DM 키워드 → `index.html`(3분 세금 계산기) → 동의 폼 → Google Sheets CRM → 상담
+인스타 릴스/카드뉴스 → 댓글·DM '세금' → `index.html`(3분 세금 계산기) → 동의 폼 → **노션 CRM** → 상담
 
 ```
 funnel/
-├─ index.html                      랜딩 + 계산기 + 동의 폼 (정적 파일, 호스팅만 하면 끝)
-├─ backend/apps-script.gs          Google Sheets 저장 · 동의 로그 · 철회 · 2년 재확인
+├─ index.html                       랜딩 + 계산기 + 동의 폼 (정적 파일)
+├─ api/lead.js                      서버리스 함수: 폼 → 노션 '고객' + '동의 로그' 저장 (전화번호로 중복 병합)
+├─ video/
+│  ├─ 릴스1_구간충격형.mp4            완성 릴스 (24초, 9:16, 무음)
+│  └─ make_reel1.py                 재조립 스크립트 (배경 클립 + 한글 자막 + 엔드카드)
 ├─ instagram/
-│  ├─ cardnews_A_세금계산기.json      카드뉴스 에디터에 바로 임포트 (6장)
-│  ├─ cardnews_B_원장님세금실수.json   카드뉴스 에디터에 바로 임포트 (5장)
-│  └─ 릴스_대본_및_타겟팅.md          릴스 3종, 타겟팅, DM 자동화, 지표
-└─ docs/CRM_스키마_및_컴플라이언스.md   스키마, 연락 판정표, 체크리스트
+│  ├─ cardnews_A_세금계산기.json      카드뉴스 에디터 임포트용 (6장)
+│  ├─ cardnews_B_원장님세금실수.json   카드뉴스 에디터 임포트용 (5장)
+│  └─ 릴스_대본_및_타겟팅.md          릴스 3종 대본, 타겟팅, DM 자동화, 지표
+└─ docs/CRM_스키마_및_컴플라이언스.md   저장 항목, 연락 판정표, 체크리스트
 ```
 
-## 5분 가동 순서
-1. `backend/apps-script.gs`를 새 스프레드시트의 Apps Script에 붙여넣고 `setup()` → 웹앱 배포 → URL 복사
-2. `index.html` 상단 `CONFIG`에 URL, 보내는 이름, 연락처, 방침 URL 입력
-3. 정적 호스팅(Vercel/Netlify/GitHub Pages)에 업로드, 인스타 프로필 링크에 `?utm_source=ig&utm_medium=bio` 붙여 등록
-4. 테스트 제출 후 `leads`, `consent_log` 확인 → `installTriggers()` 실행
-5. 릴스 1부터 업로드, 카드뉴스 JSON은 에디터 JSON 탭에 붙여넣기
+노션 구조·설정 순서는 노션 「원장님 연말세금 퍼널 설정 가이드 (MAKERS)」 페이지에 있습니다.
+
+## 배포
+1. 노션 내부 통합 토큰 발급 → '고객', '동의 로그' DB에 통합 연결
+2. Vercel: 이 레포 연결, Root Directory = `funnel`, 환경변수 `NOTION_TOKEN`
+3. 배포 도메인에서 테스트 제출 → 노션 행 확인 (`api/lead.js` 상단의 DB ID는 현재 노션 워크스페이스 기준)

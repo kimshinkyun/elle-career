@@ -101,7 +101,7 @@
       <input id="other" type="number" inputmode="numeric" min="0" value="300" />
     </div>
     <div class="field" data-field="invest">
-      <label class="f" for="invest">소득공제 대상 출자 검토액 <small>(예: 3000)</small></label>
+      <label class="f" for="invest">소득공제 검토 금액 <small>(예: 3000)</small></label>
       <input id="invest" type="number" inputmode="numeric" min="0" placeholder="예) 3000 (= 3천만원)" />
       <div class="err">0보다 큰 금액을 입력해 주세요.</div>
     </div>
@@ -233,9 +233,9 @@
 <script>
 /* ═════════ 설정 (배포 전 반드시 채우기) ═════════ */
 const CONFIG = {
-  SENDER_NAME: "【보내는 이름 확정 필요】",     // 시드파트너스 / MAKERS / 부승파트너스 중 하나로 통일
-  SENDER_CONTACT: "【대표번호/이메일】",         // 수신거부·철회 접수처
-  ENDPOINT_URL: "",                             // backend/apps-script.gs 배포 URL
+  SENDER_NAME: "MAKERS",                        // 보내는 이름 (전 채널 통일)
+  SENDER_CONTACT: "010-8322-5661",              // 수신거부·철회 접수처
+  ENDPOINT_URL: "/api/lead",                    // api/lead.js (Vercel 배포 시 같은 도메인) → 노션 저장
   PRIVACY_URL: "#",                             // 개인정보처리방침 URL
   OPTOUT_URL: "#",                              // 수신거부/동의철회 페이지 URL
   RETENTION: "동의 철회 시 또는 수집일로부터 3년",   // 보유기간(법무 확인 후 확정)
@@ -398,7 +398,8 @@ async function sendLead(p){
   const remain = [];
   for (const item of queue){
     try{
-      await fetch(CONFIG.ENDPOINT_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(item)});
+      const r = await fetch(CONFIG.ENDPOINT_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(item)});
+      if (!r.ok) remain.push(item);            // 서버가 거절/실패하면 대기열 유지 → 다음 방문 시 재전송
     }catch(err){ remain.push(item); }
   }
   localStorage.setItem(queueKey, JSON.stringify(remain));
