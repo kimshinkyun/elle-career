@@ -7,7 +7,7 @@ import pytest
 
 from shortsgen import highlights as H
 from shortsgen.models import Segment, Word
-from shortsgen.render import build_ass, chunk_words, render_clip, probe
+from shortsgen.render import build_ass, chunk_words, render_clip, probe, split_title, video_filter
 from shortsgen.transcribe import parse_srt, spread_words
 
 SENT = [
@@ -71,9 +71,13 @@ def test_chunk_and_ass():
     words = spread_words(0, 4, "원장님 연말 전에 세금 한 번 계산해 보세요.")
     chunks = chunk_words(words)
     assert all(len(c) <= 4 for c in chunks)
-    ass = build_ass(words, 0, 4, "연말 전에 3분만 계산하세요")
-    assert "Style: Cap" in ass and "Dialogue: 1," in ass and ass.count("Dialogue: 0,") == len(words)
-    assert "{" not in ass.split("[Events]")[1].replace("{\\", "").replace("{\\c", "")  # 입력 중괄호 이스케이프
+    kara = build_ass(words, 0, 4, "연말 전에 3분만 계산하세요", layout="fit", cap_style="karaoke")
+    assert "Style: Cap" in kara and "Dialogue: 1," in kara
+    assert kara.count("Dialogue: 0,") == len(words)                      # karaoke: 단어마다 1개
+    box = build_ass(words, 0, 4, "", layout="stack", cap_style="box")
+    assert box.count("Dialogue: 0,") == len(chunk_words(words, 14, 5))   # box: 구절마다 1개
+    evil = build_ass(spread_words(0, 2, "{\\an8}위험 문자"), 0, 2, "", cap_style="karaoke")
+    assert "{\\an8}" not in evil                                          # 입력 중괄호가 ASS 태그로 해석되지 않음
 
 
 @pytest.mark.skipif(not shutil.which("ffmpeg"), reason="ffmpeg 필요")
@@ -85,10 +89,32 @@ def test_render_end_to_end(tmp_path):
     segs = make_segments()
     words = [w for s in segs for w in s.words]
     out = tmp_path / "o.mp4"
-    render_clip(src, out, 5.0, 35.0, words, "연말 전에 3분만 계산하세요", "fit",
+    render_clip(src, out, 5.0, 35.0, words, "연말 전에\n3분만 계산하세요", "stack", footer="댓글에 세금",
                 fonts_dir=os.environ.get("SHORTS_TEST_FONTS"))
     w, h, d = probe(out)
     assert (w, h) == (1080, 1920) and 29 < d < 31
     out2 = tmp_path / "o2.mp4"
-    render_clip(src, out2, 5.0, 35.0, words, "", "crop", fonts_dir=os.environ.get("SHORTS_TEST_FONTS"))
+    render_clip(src, out2, 5.0, 35.0, words, "", "fit", cap_style="karaoke", fonts_dir=os.environ.get("SHORTS_TEST_FONTS"))
     assert probe(out2)[:2] == (1080, 1920)
+
+
+def test_split_title():
+    assert split_title("김민교가 입이르고 칭찬한\n역대급 콜과 AI급 무빙") == ("김민교가 입이르고 칭찬한", "역대급 콜과 AI급 무빙")
+    a, b = split_title("원장님들이 가장 많이 놓치는 세금 실수 3가지")
+    assert a and b and len(a) <= 16 and len(b) <= 16
+    assert split_title("짧은 제목") == ("짧은 제목", "")
+
+
+def test_stack_ass_and_filter():
+    words = spread_words(0, 4, "원장님 연말 전에 세금 한 번 계산해 보세요.")
+    ass = build_ass(words, 0, 4, "원장님이 놓치는\n세금 실수", layout="stack", cap_style="box", footer="댓글에 세금")
+    assert "BorderStyle" in ass and ",3,16,0,2," in ass          # 박스 자막
+    assert "Dialogue: 1,0:00:00.00,0:00:04.00,Title" in ass         # 제목은 클립 내내 표시
+    assert "Foot,,0,0,0,,댓글에 세금" in ass and "&H00D6E62E&" in ass
+    assert "overlay=0:420" in video_filter("stack", 1280, 720, 0.4)
+    assert "crop=1080:1080:0:(ih-1080)*0.25" in video_filter("stack", 720, 1280, None)
+
+
+def test_heuristic_title_not_cut_mid_word():
+    out = H.select_heuristic(make_segments(), n=1, min_s=25, max_s=45)
+    assert out and not out[0]["hook_title"].endswith("알")

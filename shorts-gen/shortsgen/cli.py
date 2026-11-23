@@ -12,7 +12,9 @@ def main(argv=None):
     p.add_argument("-n", type=int, default=5, help="만들 쇼츠 개수")
     p.add_argument("--min", dest="min_s", type=int, default=25)
     p.add_argument("--max", dest="max_s", type=int, default=55)
-    p.add_argument("--layout", choices=["auto", "fit", "crop"], default="auto")
+    p.add_argument("--layout", choices=["stack", "fit", "crop"], default="stack", help="stack: 이지컷 스타일(상단 제목+정사각 영상)")
+    p.add_argument("--cap-style", choices=["box", "karaoke"], default="box", help="box: 박스 자막 / karaoke: 말하는 단어 노랑 강조")
+    p.add_argument("--footer", default="", help="하단 문구 (예: 댓글에 '세금' → 3분 계산기)")
     p.add_argument("--font", default=default_font(), help="자막 글꼴 이름 (기본: 운영체제별 한글 글꼴)")
     p.add_argument("--fonts-dir", help="글꼴 파일이 들어있는 폴더 (선택)")
     p.add_argument("--whisper", default="large-v3", help="large-v3(정확) / medium / small(빠름)")
@@ -30,7 +32,7 @@ def main(argv=None):
         print("영상 내려받는 중… (본인 소유/허락받은 영상만 사용하세요)")
         src = download(src, f"{a.out}/_downloads")
     res = run(src, a.out, a.n, a.min_s, a.max_s, a.layout, a.font, a.fonts_dir, a.whisper, a.language,
-              a.transcript, not a.no_llm, a.model, a.audience, [t.strip() for t in a.avoid.split(",") if t.strip()])
+              a.transcript, not a.no_llm, a.model, a.audience, [t.strip() for t in a.avoid.split(",") if t.strip()], None, print, a.cap_style, a.footer)
     for c in res["clips"]:
         print(f"  {c['total']:5.1f}점  {c['hook_title']}  →  {c['file']}")
     return 0

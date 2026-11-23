@@ -26,7 +26,8 @@ SYSTEM = """당신은 유튜브 쇼츠·릴스 전문 편집 디렉터입니다.
 7. 점수는 엄격하게(대부분 40~85). 평균 이상만 후보로 제출합니다.
 8. 확인되지 않은 수익 보장·단정적 투자/의료 효과 표현, 특정 금융상품 권유가 있으면 risk_flags에 적습니다.
 
-hook_title: 화면 상단에 3초간 띄울 한국어 문구(공백 포함 18자 이내, 마침표 없음, 과장·낚시 금지, 영상 내용과 일치)."""
+hook_title: 화면 상단에 계속 띄울 한국어 제목. 줄바꿈(\n)으로 정확히 두 줄, 각 줄 14자 이내, 마침표 없음. 첫 줄은 상황/주체, 둘째 줄은 핵심 포인트(강조색으로 표시됨). 과장·낚시 금지, 영상 내용과 일치.
+summary: 'AI 하이라이트' 한 문장(60자 이내) — 이 구간에서 시청자가 얻는 것."""
 
 TOOL = {
     "name": "submit_clips",
@@ -41,7 +42,8 @@ TOOL = {
                     "properties": {
                         "start": {"type": "number", "description": "시작(초)"},
                         "end": {"type": "number", "description": "끝(초)"},
-                        "hook_title": {"type": "string"},
+                        "hook_title": {"type": "string", "description": "두 줄(\\n 구분), 각 줄 14자 이내"},
+                        "summary": {"type": "string", "description": "AI 하이라이트 한 문장"},
                         "yt_title": {"type": "string", "description": "업로드용 제목(40자 이내)"},
                         "description": {"type": "string", "description": "업로드용 설명 2~3줄"},
                         "hashtags": {"type": "array", "items": {"type": "string"}},
@@ -53,7 +55,7 @@ TOOL = {
                         "reason": {"type": "string", "description": "이 구간을 고른 이유 1~2문장"},
                         "risk_flags": {"type": "array", "items": {"type": "string"}},
                     },
-                    "required": ["start", "end", "hook_title", "yt_title", "scores", "reason"],
+                    "required": ["start", "end", "hook_title", "yt_title", "summary", "scores", "reason"],
                 },
             }
         },
@@ -119,6 +121,15 @@ HOOK_WORDS = ["비밀", "실수", "절대", "진짜", "문제는", "결론", "�
 END_RE = re.compile(r"(다|요|죠|까|네|세요|습니다|니다)[.?!]?$|[.?!]$")
 
 
+def _short(text, n):
+    """n자 안에서 단어 경계로 자르기(단어 중간 절단 방지)."""
+    text = text.strip().rstrip(" ,.")
+    if len(text) <= n:
+        return text
+    cut = text[:n].rsplit(" ", 1)[0]
+    return (cut if len(cut) >= n // 2 else text[:n]).rstrip(" ,.")
+
+
 def select_heuristic(segments, n=5, min_s=25, max_s=55, avoid_terms=()):
     cands = []
     target = (min_s + max_s) / 2
@@ -142,7 +153,7 @@ def select_heuristic(segments, n=5, min_s=25, max_s=55, avoid_terms=()):
         rate = len(text.replace(" ", "")) / dur
         trend = 50 + (10 if 4 <= rate <= 8 else -10)
         cands.append({
-            "start": first.start, "end": end, "hook_title": head[:18].rstrip(" ,."), "yt_title": head[:40],
+            "start": first.start, "end": end, "hook_title": _short(head, 28), "yt_title": _short(head, 40), "summary": _short(head, 60),
             "description": "", "hashtags": [], "reason": "규칙 기반 점수(훅 문구·숫자·문장 완결성)",
             "scores": {k: max(0, min(100, int(v))) for k, v in
                        {"hook": hook, "flow": flow, "value": value, "trend": trend}.items()},
@@ -185,6 +196,7 @@ def finalize(cands, segments, n, min_s, max_s, avoid_terms=()):
         c = dict(c, start=s, end=e, total=total_score(c["scores"]))
         c.setdefault("hashtags", [])
         c.setdefault("risk_flags", [])
+        c.setdefault("summary", "")
         ready.append(c)
     ready.sort(key=lambda c: c["total"], reverse=True)
     picked = []
